@@ -12,6 +12,7 @@ import {
   Row,
 
 } from "react-bootstrap";
+import { BarChart,  Cell,Bar,XAxis,YAxis,Tooltip,Legend} from "recharts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -211,57 +212,102 @@ const AccuracyPage = () => {
                   )}
                 </Button>
 
-                <Button
-                  variant="warning"
-                  onClick={() => checkAccuracy(true)}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Spinner animation="border" size="sm" className="me-2" />
-                      Recalculating...
-                    </>
-                  ) : (
-                    "🔄 Recalculate"
-                  )}
-                </Button>
+           
               </div>
-              <h3>Recalculate time : 15min Approx</h3>
+              
+
 
               {accuracy && (
-                <div className="mt-4">
-                  <h4>
-                    ✔ Character Accuracy:{" "}
-                    {accuracy.character_accuracy.toFixed(2)}%
-                  </h4>
-                  <h4>✔ Word Accuracy: {accuracy.word_accuracy.toFixed(2)}%</h4>
-                </div>
-              )}
+  <Row className="mt-5">
+    <Col md={6}>
+      <h4 className="mb-4">🔢 Accuracy Table</h4>
+      <table className="table table-bordered text-start">
+        <thead className="table-dark">
+          <tr>
+            <th>Metric</th>
+            <th>Value (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Character Accuracy</td>
+            <td style={{ color: "blue", fontWeight: "bold" }}
+            >{accuracy.character_accuracy?.toFixed(2) ?? "N/A"}
+            </td>
+          </tr>
+          <tr>
+            <td >Word Accuracy</td>
+            <td style={{ color: "red", fontWeight: "bold" }}
+            >{accuracy.word_accuracy?.toFixed(2) ?? "N/A"}
+            </td>
+          </tr>
+          <tr>
+            <td>Character Error Rate</td>
+            <td>{accuracy.character_error_rate?.toFixed(2) ?? "N/A"}</td>
+          </tr>
+          <tr>
+            <td>Word Error Rate</td>
+            <td style={{ color: "orange", fontWeight: "bold" }}
+            >{accuracy.word_error_rate?.toFixed(2) ?? "N/A"}</td>
+          </tr>
+        </tbody>
+      </table>
+    </Col>
+
+    <Col md={6}>
+      <h4 className="mb-4">📊 Accuracy Chart</h4>
+<BarChart
+  width={400}
+  height={300}
+  data={[
+    { name: "Char Acc", value: accuracy.character_accuracy ?? 0 },
+    { name: "Word Acc", value: accuracy.word_accuracy ?? 0 },
+    { name: "Char Err", value: accuracy.character_error_rate ?? 0 },
+    { name: "Word Err", value: accuracy.word_error_rate ?? 0 },
+  ]}
+>
+  <XAxis dataKey="name" />
+  <YAxis />
+  <Tooltip />
+  <Legend />
+  <Bar dataKey="value">
+    {[
+      "#007bff", // Char Acc – blue
+      "red",     // Word Acc – red
+      "#000000", // Char Err – blue
+      "#FFA500", // Word Err – blue
+    ].map((color, index) => (
+      <Cell key={`cell-${index}`} fill={color} />
+    ))}
+  </Bar>
+</BarChart>
+    </Col>
+  </Row>
+)}
             </div>
           </Card.Body>
         </Card>
       </section>
 
-      <footer className="bg-black w-100 mt-5 overflow-hidden py-5">
-  <h2 className="text-center font-semibold text-lg mb-4 text-white">Contributors</h2>
-  <hr className="bg-light" />
+      <footer style={{ backgroundColor: "#2e2e2e" }} className=" w-100 mt-5 overflow-hidden py-3">
+  <h4 className="text-center text-white mb-3">Contributors</h4>
+  <hr className="bg-light mx-auto" style={{ width: "60%" }} />
 
   <div className="container">
     <div className="row justify-content-center text-center">
       {/* Contributor 1 */}
-      <div className="col-md-3 d-flex flex-column align-items-center mb-4">
+      <div className="col-md-3 d-flex flex-column align-items-center mb-3">
         <img
           src="khushnoor.png"
-          alt="Contributor 1"
-          style={{ width: "200px", height: "200px" }}
-          className="rounded-circle mb-2 object-fit-cover"
+          alt="Khushnoor Farooq"
+          style={{ width: "140px", height: "140px", objectFit: "cover" }}
+          className="rounded-circle mb-2"
         />
         <p className="fw-bold text-white mb-1">Khushnoor Farooq</p>
-        <p className="text-sm" style={{ color: "#74bef8" }}>kkhatim43@gmail.com</p>
+        <p className="text-white-50 small mb-1">kkhatim43@gmail.com</p>
         <a
           href="https://www.linkedin.com/in/khushnoor-g-8633bb214/"
-          className="text-primary text-sm"
-          style={{ textDecoration: "none" }}
+          className="text-primary small"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -270,19 +316,18 @@ const AccuracyPage = () => {
       </div>
 
       {/* Contributor 2 */}
-      <div className="col-md-3 d-flex flex-column align-items-center mb-4">
+      <div className="col-md-3 d-flex flex-column align-items-center mb-3">
         <img
-          src="khushnoor.png"
-          alt="Contributor 2"
-          style={{ width: "200px", height: "200px" }}
-          className="rounded-circle mb-2 object-fit-cover"
+          src="jahanzaib.jpeg"
+          alt="Jahanzaib"
+          style={{ width: "140px", height: "140px", objectFit: "cover" }}
+          className="rounded-circle mb-2"
         />
         <p className="fw-bold text-white mb-1">Jahanzaib</p>
-        <p className="text-sm" style={{ color: "#74bef8" }}>jahanzaibgojwari@gmail.com</p>
+        <p className="text-white-50 small mb-1">jahanzaibgojwari@gmail.com</p>
         <a
-          href="https://www.linkedin.com/in/rajpatel"
-          className="text-primary text-sm"
-          style={{ textDecoration: "none" }}
+          href="https://www.linkedin.com/in/jahanzaib-gojwari-247400224/"
+          className="text-primary small"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -291,19 +336,18 @@ const AccuracyPage = () => {
       </div>
 
       {/* Contributor 3 */}
-      <div className="col-md-3 d-flex flex-column align-items-center mb-4">
+      <div className="col-md-3 d-flex flex-column align-items-center mb-3">
         <img
-          src="khushnoor.png"
-          alt="Contributor 3"
-          style={{ width: "200px", height: "200px" }}
-          className="rounded-circle mb-2 object-fit-cover"
+          src="waseem.jpeg"
+          alt="Waseem"
+          style={{ width: "140px", height: "140px", objectFit: "cover" }}
+          className="rounded-circle mb-2"
         />
         <p className="fw-bold text-white mb-1">Waseem</p>
-        <p className="text-sm" style={{ color: "#74bef8" }}>kkhatim43@gmail.com</p>
+        <p className="text-white-50 small mb-1">waseemazizgazi@duck.com</p>
         <a
-          href="https://www.linkedin.com/in/khushnoor-g-8633bb214/"
-          className="text-primary text-sm"
-          style={{ textDecoration: "none" }}
+          href="https://www.linkedin.com/in/waseem-aziz-gazi-40b72b263/"
+          className="text-primary small"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -313,9 +357,9 @@ const AccuracyPage = () => {
     </div>
   </div>
 
-  <hr className="bg-light" />
-  <h4 className="text-center text-white">2025 @ Lip Reading — All rights reserved</h4>
+
 </footer>
+
 
     </>
   );

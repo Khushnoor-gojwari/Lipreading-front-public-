@@ -30,34 +30,79 @@ function HomePage() {
     }
   };
 
-  useEffect(() => {
-    axios.get("http://localhost:8000/videos/").then((res) => {
-      setVideoList(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get("http://localhost:8000/videos/").then((res) => {
+  //     setVideoList(res.data);
+  //   });
+  // }, []);
+
+useEffect(() => {
+  axios.get("http://localhost:8000/videos/").then((res) => {
+    setVideoList(res.data);
+  });
+
+  // Restore saved data if any
+  const saved = localStorage.getItem("lipreading_data");
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    setSelectedVideo(parsed.selectedVideo);
+    setRealText(parsed.realText);
+    setPredictedText(parsed.predictedText);
+    setVideoUrl(parsed.videoUrl);
+  }
+}, []);
+
+  // const handleGenerate = async () => {
+  //   if (!selectedVideo) return;
+  //   setLoading(true);
+  //   try {
+  //     const res = await axios.get("http://localhost:8000/predict/", {
+  //       params: { video_name: selectedVideo },
+  //     });
+  //     setRealText(res.data.real_text);
+  //     setPredictedText(res.data.predicted_text);
+  //     setVideoUrl(res.data.video_url);
+  //   } catch (err) {
+  //     alert("Error generating subtitle");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleGenerate = async () => {
-    if (!selectedVideo) return;
-    setLoading(true);
-    try {
-      const res = await axios.get("http://localhost:8000/predict/", {
-        params: { video_name: selectedVideo },
-      });
-      setRealText(res.data.real_text);
-      setPredictedText(res.data.predicted_text);
-      setVideoUrl(res.data.video_url);
-    } catch (err) {
-      alert("Error generating subtitle");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!selectedVideo) return;
+  setLoading(true);
+  try {
+    const res = await axios.get("http://localhost:8000/predict/", {
+      params: { video_name: selectedVideo },
+    });
+
+    const data = {
+      selectedVideo,
+      realText: res.data.real_text,
+      predictedText: res.data.predicted_text,
+      videoUrl: res.data.video_url,
+    };
+
+    // Save to localStorage
+    localStorage.setItem("lipreading_data", JSON.stringify(data));
+
+    // Set state
+    setRealText(data.realText);
+    setPredictedText(data.predictedText);
+    setVideoUrl(data.videoUrl);
+  } catch (err) {
+    alert("Error generating subtitle");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
       <Navbar
         // bg="black"
-        style={{ backgroundColor: "#F75990" }}
+        style={{ backgroundColor: "#74bef8" }}
         variant="black"
         expand="lg"
         sticky="top"
@@ -213,7 +258,8 @@ function HomePage() {
                 </Form.Label>
                 <Form.Select
                   value={selectedVideo}
-                  onChange={(e) => setSelectedVideo(e.target.value)}
+                   onChange={(e) => setSelectedVideo(e.target.value)}
+                 
                 >
                   <option value="">-- Choose a video --</option>
                   {videoList.map((video, idx) => (
@@ -247,6 +293,7 @@ function HomePage() {
               <div className="text-center mb-4">
                 <h5 className="mb-3">🎥 Converted Video Preview</h5>
                 <video
+                  key={videoUrl}
                   width="60%"
                   height="auto"
                   controls
@@ -279,9 +326,15 @@ function HomePage() {
               </Col>
             </Row>
             <div className="d-flex justify-content-center mb-4 mt-4" >
-              <Button variant="success" onClick={() => navigate("/accuracy")}>
-                Check Accuracy
-              </Button>
+              <Button
+  variant="success"
+  onClick={() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/accuracy");
+  }}
+>
+  Check Accuracy
+</Button>
             </div>
           </Card.Body>
         </Card>
