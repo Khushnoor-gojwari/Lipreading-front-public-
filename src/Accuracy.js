@@ -21,14 +21,28 @@ const AccuracyPage = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  // const checkAccuracy = async (force = false) => {
+  //   setLoading(true);
+  //   const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/calculate-accuracy", {
+  //     params: { force },
+  //   });
+  //   setAccuracy(res.data);
+  //   setLoading(false);
+  // };
+
   const checkAccuracy = async (force = false) => {
-    setLoading(true);
+  setLoading(true);
+  try {
     const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/calculate-accuracy", {
       params: { force },
     });
+    console.log("✅ Accuracy response:", res.data);  // 🔍 Debug log
     setAccuracy(res.data);
-    setLoading(false);
-  };
+  } catch (error) {
+    console.error("❌ Failed to fetch accuracy:", error);  // ❗ Log error
+  }
+  setLoading(false);
+};
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
