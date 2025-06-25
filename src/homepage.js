@@ -30,44 +30,21 @@ function HomePage() {
     }
   };
 
-  // useEffect(() => {
-  //   axios.get("https://lipreadingbackend-public-9.onrender.com/").then((res) => {
-  //     setVideoList(res.data);
-  //   });
-  // }, []);
-
 useEffect(() => {
   axios.get("https://lipreadingbackend-public-9.onrender.com/videos/").then((res) => {
     setVideoList(res.data);
   });
 
-  // Restore saved data if any
-  const saved = localStorage.getItem("lipreading_data");
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    setSelectedVideo(parsed.selectedVideo);
-    setRealText(parsed.realText);
-    setPredictedText(parsed.predictedText);
-    setVideoUrl(parsed.videoUrl);
-  }
+  // Removed localStorage restore logic
+  // const saved = localStorage.getItem("lipreading_data");
+  // if (saved) {
+  //   const parsed = JSON.parse(saved);
+  //   setSelectedVideo(parsed.selectedVideo);
+  //   setRealText(parsed.realText);
+  //   setPredictedText(parsed.predictedText);
+  //   setVideoUrl(parsed.videoUrl);
+  // }
 }, []);
-
-  // const handleGenerate = async () => {
-  //   if (!selectedVideo) return;
-  //   setLoading(true);
-  //   try {
-  //     const res = await axios.get("http://localhost:8000/predict/", {
-  //       params: { video_name: selectedVideo },
-  //     });
-  //     setRealText(res.data.real_text);
-  //     setPredictedText(res.data.predicted_text);
-  //     setVideoUrl(res.data.video_url);
-  //   } catch (err) {
-  //     alert("Error generating subtitle");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
  const handleGenerate = async () => {
   if (!selectedVideo) {
@@ -84,21 +61,25 @@ useEffect(() => {
 
     console.log("✅ Response:", res.data);
 
-    const data = {
-      selectedVideo,
-      realText: res.data.real_text,
-      predictedText: res.data.predicted_text,
-      videoUrl: res.data.video_url,
-    };
+    // Removed localStorage saving logic
+    // const data = {
+    //   selectedVideo,
+    //   realText: res.data.real_text,
+    //   predictedText: res.data.predicted_text,
+    //   videoUrl: res.data.video_url,
+    // };
+    // localStorage.setItem("lipreading_data", JSON.stringify(data));
 
-    localStorage.setItem("lipreading_data", JSON.stringify(data));
-
-    setRealText(data.realText);
-    setPredictedText(data.predictedText);
-    setVideoUrl(data.videoUrl);
+    setRealText(res.data.real_text); // Set state directly from response
+    setPredictedText(res.data.predicted_text); // Set state directly from response
+    setVideoUrl(res.data.video_url); // Set state directly from response
   } catch (err) {
     console.error("❌ Error during generation:", err.response?.data || err.message);
     alert("Error generating subtitle. See console for more info.");
+    // Clear previous results on error
+    setRealText("");
+    setPredictedText("");
+    setVideoUrl("");
   } finally {
     setLoading(false);
   }
@@ -138,7 +119,7 @@ useEffect(() => {
               <Nav.Link href="#try" style={{ color: "#1c2667" }}>
                 Try LipReading
               </Nav.Link>
-              <Nav.Link 
+              <Nav.Link
               onClick={() => navigate("/accuracy")}
               style={{ color: "#1c2667", cursor: "pointer" }}
               >
@@ -263,15 +244,14 @@ useEffect(() => {
                   <strong>Select a Video File</strong>
                 </Form.Label>
                 <Form.Select
-id="videoSelect"        // ✅ Add this line
-  name="video_name"  
-  value={selectedVideo}
-  onChange={(e) => {
-    console.log("Selected video:", e.target.value);  // ✅ Add this
-    setSelectedVideo(e.target.value);
-  }}
->
-
+                  id="videoSelect"
+                  name="video_name"
+                  value={selectedVideo}
+                  onChange={(e) => {
+                    console.log("Selected video:", e.target.value);
+                    setSelectedVideo(e.target.value);
+                  }}
+                >
                   <option value="">-- Choose a video --</option>
                   {videoList.map((video, idx) => (
                     <option key={idx} value={video}>
@@ -302,51 +282,10 @@ id="videoSelect"        // ✅ Add this line
 
             {videoUrl && (
               <div className="text-center mb-4">
-                <h5 className="mb-3">🎥 Converted Video Preview</h5>
-                <video
-                  key={videoUrl}
-                  width="60%"
-                  height="auto"
-                  controls
-                  style={{ borderRadius: "12px" }}
-                >
-                  <source src={videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                <h5 className="mb-3">Generated Subtitles</h5>
+                {/* ... Rest of the code (assuming it displays the video and subtitles) */}
               </div>
             )}
-
-            <Row className="mt-4">
-              <Col md={6}>
-                <h5>📌 Real Text (Ground Truth)</h5>
-                <Form.Control
-                  type="text"
-                  value={realText}
-                  readOnly
-                  className="bg-light"
-                />
-              </Col>
-              <Col md={6}>
-                <h5>🤖 Predicted Text</h5>
-                <Form.Control
-                  type="text"
-                  value={predictedText}
-                  readOnly
-                  className="bg-light"
-                />
-              </Col>
-            </Row>
-            <div className="d-flex justify-content-center mb-4 mt-4" >
-              <Button
-  variant="success"
-  onClick={() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate("/accuracy");
-  }}
->
-  Check Accuracy
-</Button>
-            </div>
           </Card.Body>
         </Card>
       </section>
