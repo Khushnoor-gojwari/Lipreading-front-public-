@@ -31,13 +31,13 @@ function HomePage() {
   };
 
   // useEffect(() => {
-  //   axios.get("http://localhost:8000/videos/").then((res) => {
+  //   axios.get("https://lipreadingbackend-public-9.onrender.com/").then((res) => {
   //     setVideoList(res.data);
   //   });
   // }, []);
 
 useEffect(() => {
-  axios.get("http://localhost:8000/videos/").then((res) => {
+  axios.get("https://lipreadingbackend-public-9.onrender.com/").then((res) => {
     setVideoList(res.data);
   });
 
@@ -73,7 +73,7 @@ useEffect(() => {
   if (!selectedVideo) return;
   setLoading(true);
   try {
-    const res = await axios.get("http://localhost:8000/predict/", {
+    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/", {
       params: { video_name: selectedVideo },
     });
 
