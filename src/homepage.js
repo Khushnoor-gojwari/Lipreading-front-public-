@@ -257,10 +257,13 @@ useEffect(() => {
                   <strong>Select a Video File</strong>
                 </Form.Label>
                 <Form.Select
-                  value={selectedVideo}
-                   onChange={(e) => setSelectedVideo(e.target.value)}
-                 
-                >
+  value={selectedVideo}
+  onChange={(e) => {
+    console.log("Selected video:", e.target.value);  // ✅ Add this
+    setSelectedVideo(e.target.value);
+  }}
+>
+
                   <option value="">-- Choose a video --</option>
                   {videoList.map((video, idx) => (
                     <option key={idx} value={video}>
