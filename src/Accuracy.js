@@ -23,7 +23,7 @@ const AccuracyPage = () => {
   const navigate = useNavigate();
   const checkAccuracy = async (force = false) => {
     setLoading(true);
-    const res = await axios.get("http://localhost:8000/calculate-accuracy", {
+    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/", {
       params: { force },
     });
     setAccuracy(res.data);
