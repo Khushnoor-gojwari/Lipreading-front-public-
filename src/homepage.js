@@ -69,13 +69,20 @@ useEffect(() => {
   //   }
   // };
 
-  const handleGenerate = async () => {
-  if (!selectedVideo) return;
+ const handleGenerate = async () => {
+  if (!selectedVideo) {
+    alert("Please select a video first");
+    return;
+  }
+
   setLoading(true);
   try {
+    console.log("▶️ Sending request with:", selectedVideo);
     const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/predict", {
       params: { video_name: selectedVideo },
     });
+
+    console.log("✅ Response:", res.data);
 
     const data = {
       selectedVideo,
@@ -84,15 +91,14 @@ useEffect(() => {
       videoUrl: res.data.video_url,
     };
 
-    // Save to localStorage
     localStorage.setItem("lipreading_data", JSON.stringify(data));
 
-    // Set state
     setRealText(data.realText);
     setPredictedText(data.predictedText);
     setVideoUrl(data.videoUrl);
   } catch (err) {
-    alert("Error generating subtitle");
+    console.error("❌ Error during generation:", err.response?.data || err.message);
+    alert("Error generating subtitle. See console for more info.");
   } finally {
     setLoading(false);
   }
@@ -257,6 +263,8 @@ useEffect(() => {
                   <strong>Select a Video File</strong>
                 </Form.Label>
                 <Form.Select
+id="videoSelect"        // ✅ Add this line
+  name="video_name"  
   value={selectedVideo}
   onChange={(e) => {
     console.log("Selected video:", e.target.value);  // ✅ Add this
