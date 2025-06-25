@@ -37,7 +37,7 @@ function HomePage() {
   // }, []);
 
 useEffect(() => {
-  axios.get("https://lipreadingbackend-public-9.onrender.com/").then((res) => {
+  axios.get("https://lipreadingbackend-public-9.onrender.com/videos/").then((res) => {
     setVideoList(res.data);
   });
 
@@ -73,7 +73,7 @@ useEffect(() => {
   if (!selectedVideo) return;
   setLoading(true);
   try {
-    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/", {
+    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/predict", {
       params: { video_name: selectedVideo },
     });
 
