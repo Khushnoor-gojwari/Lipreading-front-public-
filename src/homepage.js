@@ -73,7 +73,7 @@ useEffect(() => {
   if (!selectedVideo) return;
   setLoading(true);
   try {
-    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/predict", {
+    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/predict/", {
       params: { video_name: selectedVideo },
     });
 
