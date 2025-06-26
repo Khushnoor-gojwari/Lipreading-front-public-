@@ -280,17 +280,7 @@ useEffect(() => {
                 />
               </Col>
             </Row>
-            <div className="d-flex justify-content-center mb-4 mt-4" >
-              <Button
-  variant="success"
-  onClick={() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate("/accuracy");
-  }}
->
-  Check Accuracy
-</Button>
-            </div>
+          
           </Card.Body>
         </Card>
       </section>
