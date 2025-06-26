@@ -83,10 +83,17 @@ function HomePage() {
     setRealText(res.data.real_text);
     setPredictedText(res.data.predicted_text);
   } catch (err) {
-    console.error("❌ Error:", err.response?.data || err.message);
-    alert("Error generating subtitle.");
-    setRealText("");
-    setPredictedText("");
+  if (err.response) {
+    console.error("❌ Server responded with error:", err.response.data);
+  } else if (err.request) {
+    console.error("❌ No response received:", err.request);
+  } else {
+    console.error("❌ Error setting up request:", err.message);
+  }
+  alert("Error generating subtitle. Check console for more info.");
+  setRealText("");
+  setPredictedText("");
+
   } finally {
     setLoading(false);
   }
