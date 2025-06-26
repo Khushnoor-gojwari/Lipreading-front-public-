@@ -66,6 +66,13 @@ function HomePage() {
     }
   };
 
+    const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <Navbar style={{ backgroundColor: "#74bef8" }} variant="black" expand="lg" sticky="top" className="mb-0 w-100">
