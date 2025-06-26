@@ -17,7 +17,7 @@ import {
 function HomePage() {
   const [videoList, setVideoList] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  // const [videoUrl, setVideoUrl] = useState("");
   const [realText, setRealText] = useState("");
   const [predictedText, setPredictedText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,37 +34,64 @@ function HomePage() {
       });
   }, []);
 
+  // const handleGenerate = async () => {
+  //   if (!selectedVideo) {
+  //     alert("Please select a video first");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   const formData = new FormData();
+  //   formData.append("file", selectedVideo); // Ensure selectedVideo is a File object
+
+  //   try {
+  //     console.log("▶️ Sending request with:", selectedVideo);
+  //     const res = await axios.post("https://lipreadingbackend-public-9.onrender.com/predict", formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     console.log("✅ Response:", res.data);
+  //     setRealText(res.data.real_text);
+  //     setPredictedText(res.data.predicted_text);
+  //     setVideoUrl(res.data.video_url);
+  //   } catch (err) {
+  //     console.error("❌ Error during generation:", err.response?.data || err.message);
+  //     alert("Error generating subtitle. See console for more info.");
+  //     setRealText("");
+  //     setPredictedText("");
+  //     setVideoUrl("");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleGenerate = async () => {
-    if (!selectedVideo) {
-      alert("Please select a video first");
-      return;
-    }
+  if (!selectedVideo) {
+    alert("Please select a video first");
+    return;
+  }
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("file", selectedVideo); // Ensure selectedVideo is a File object
+  setLoading(true);
 
-    try {
-      console.log("▶️ Sending request with:", selectedVideo);
-      const res = await axios.post("https://lipreadingbackend-public-9.onrender.com/predict", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("✅ Response:", res.data);
-      setRealText(res.data.real_text);
-      setPredictedText(res.data.predicted_text);
-      setVideoUrl(res.data.video_url);
-    } catch (err) {
-      console.error("❌ Error during generation:", err.response?.data || err.message);
-      alert("Error generating subtitle. See console for more info.");
-      setRealText("");
-      setPredictedText("");
-      setVideoUrl("");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const res = await axios.post(
+      "https://lipreadingbackend-public-9.onrender.com/predict",
+      null, // no body
+      { params: { video_name: selectedVideo } }
+    );
+    setRealText(res.data.real_text);
+    setPredictedText(res.data.predicted_text);
+  } catch (err) {
+    console.error("❌ Error:", err.response?.data || err.message);
+    alert("Error generating subtitle.");
+    setRealText("");
+    setPredictedText("");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -155,71 +182,62 @@ function HomePage() {
         </Card>
       </section>
 
-      <section id="try" className="m-4 mb-5">
-        <Card className="shadow-lg border-0">
-          <Card.Body className="p-5">
-            <h2 className="text-center mb-4">🎬 Lip Reading Subtitle Generator</h2>
-            <Form>
-              <Form.Group className="mb-4">
-                <Form.Label><strong>Select a Video File</strong></Form.Label>
-                <Form.Select
-                  id="videoSelect"
-                  name="video_name"
-                  value={selectedVideo}
-                  onChange={(e) => {
-                    console.log("Selected video:", e.target.value);
-                    setSelectedVideo(e.target.value);
-                  }}
-                >
-                  <option value="">-- Choose a video --</option>
-                  {videoList.map((video, idx) => (
-                    <option key={idx} value={video}>{video}</option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
+<section id="try" className="m-4 mb-5">
+  <Card className="shadow-lg border-0">
+    <Card.Body className="p-5">
+      <h2 className="text-center mb-4">🎬 Lip Reading Subtitle Generator</h2>
+      <Form>
+        <Form.Group className="mb-4">
+          <Form.Label><strong>Select a Video File</strong></Form.Label>
+          <Form.Select
+            id="videoSelect"
+            name="video_name"
+            value={selectedVideo}
+            onChange={(e) => {
+              console.log("Selected video:", e.target.value);
+              setSelectedVideo(e.target.value);
+            }}
+          >
+            <option value="">-- Choose a video --</option>
+            {videoList.map((video, idx) => (
+              <option key={idx} value={video}>{video}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
 
-              <div className="d-flex justify-content-center mb-4">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleGenerate}
-                  disabled={loading || !selectedVideo}
-                >
-                  {loading ? (
-                    <>
-                      <Spinner animation="border" size="sm" className="me-2" />
-                      Generating...
-                    </>
-                  ) : (
-                    "Generate Subtitle"
-                  )}
-                </Button>
-              </div>
-            </Form>
-
-            {videoUrl && (
-              <div className="text-center mb-4">
-                <h5 className="mb-3">🎥 Converted Video Preview</h5>
-                <video key={videoUrl} width="60%" height="auto" controls style={{ borderRadius: "12px" }}>
-                  <source src={videoUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
+        <div className="d-flex justify-content-center mb-4">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleGenerate}
+            disabled={loading || !selectedVideo}
+          >
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" className="me-2" />
+                Generating...
+              </>
+            ) : (
+              "Generate Subtitle"
             )}
+          </Button>
+        </div>
+      </Form>
 
-            <Row className="mt-4">
-              <Col md={6}>
-                <h5>📌 Real Text (Ground Truth)</h5>
-                <Form.Control type="text" value={realText} readOnly className="bg-light" />
-              </Col>
-              <Col md={6}>
-                <h5>🤖 Predicted Text</h5>
-                <Form.Control type="text" value={predictedText} readOnly className="bg-light" />
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-      </section>
+      <Row className="mt-4">
+        <Col md={6}>
+          <h5>📌 Real Text (Ground Truth)</h5>
+          <Form.Control type="text" value={realText} readOnly className="bg-light" />
+        </Col>
+        <Col md={6}>
+          <h5>🤖 Predicted Text</h5>
+          <Form.Control type="text" value={predictedText} readOnly className="bg-light" />
+        </Col>
+      </Row>
+    </Card.Body>
+  </Card>
+</section>
+
     </>
   );
 }
