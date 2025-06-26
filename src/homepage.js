@@ -55,28 +55,18 @@ useEffect(() => {
   setLoading(true);
   try {
     console.log("▶️ Sending request with:", selectedVideo);
-    const res = await axios.get("https://lipreadingbackend-public-9.onrender.com/predict", {
-      params: { video_name: selectedVideo },
+    const res = await axios.post("https://lipreadingbackend-public-9.onrender.com/predict", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
-
     console.log("✅ Response:", res.data);
-
-    // Removed localStorage saving logic
-    // const data = {
-    //   selectedVideo,
-    //   realText: res.data.real_text,
-    //   predictedText: res.data.predicted_text,
-    //   videoUrl: res.data.video_url,
-    // };
-    // localStorage.setItem("lipreading_data", JSON.stringify(data));
-
-    setRealText(res.data.real_text); // Set state directly from response
-    setPredictedText(res.data.predicted_text); // Set state directly from response
-    setVideoUrl(res.data.video_url); // Set state directly from response
+    setRealText(res.data.real_text);
+    setPredictedText(res.data.predicted_text);
+    setVideoUrl(res.data.video_url);
   } catch (err) {
     console.error("❌ Error during generation:", err.response?.data || err.message);
     alert("Error generating subtitle. See console for more info.");
-    // Clear previous results on error
     setRealText("");
     setPredictedText("");
     setVideoUrl("");
