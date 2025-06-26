@@ -3,16 +3,7 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Navbar,
-  Nav,
-  Card,
-  Form,
-  Spinner,
-} from "react-bootstrap";
+Container,Row,Col,Button,Navbar,Nav,Card,Form,Spinner,} from "react-bootstrap";
 
 function HomePage() {
   const [videoList, setVideoList] = useState([]);
@@ -29,23 +20,10 @@ function HomePage() {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
-
 useEffect(() => {
   axios.get("https://lipreadingbackend-public-9.onrender.com/videos/").then((res) => {
     setVideoList(res.data);
   });
-
-  // Removed localStorage restore logic
-  // const saved = localStorage.getItem("lipreading_data");
-  // if (saved) {
-  //   const parsed = JSON.parse(saved);
-  //   setSelectedVideo(parsed.selectedVideo);
-  //   setRealText(parsed.realText);
-  //   setPredictedText(parsed.predictedText);
-  //   setVideoUrl(parsed.videoUrl);
-  // }
-}, []);
-
  const handleGenerate = async () => {
   if (!selectedVideo) {
     alert("Please select a video first");
