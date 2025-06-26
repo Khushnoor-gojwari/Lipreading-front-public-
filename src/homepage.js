@@ -77,28 +77,29 @@ function HomePage() {
   try {
     const res = await axios.post(
       "https://lipreadingbackend-public-9.onrender.com/predict",
-      null, // no body
-      { params: { video_name: selectedVideo } }
+      null, // no body needed
+      {
+        params: { video_name: selectedVideo },
+        timeout: 15000, // 15 seconds max
+      }
     );
     setRealText(res.data.real_text);
     setPredictedText(res.data.predicted_text);
   } catch (err) {
-  if (err.response) {
-    console.error("❌ Server responded with error:", err.response.data);
-  } else if (err.request) {
-    console.error("❌ No response received:", err.request);
-  } else {
-    console.error("❌ Error setting up request:", err.message);
-  }
-  alert("Error generating subtitle. Check console for more info.");
-  setRealText("");
-  setPredictedText("");
-
+    if (err.response) {
+      console.error("❌ Server responded with error:", err.response.data);
+    } else if (err.request) {
+      console.error("❌ No response received:", err.request);
+    } else {
+      console.error("❌ Error setting up request:", err.message);
+    }
+    alert("Error generating subtitle. Check console for more info.");
+    setRealText("");
+    setPredictedText("");
   } finally {
     setLoading(false);
   }
 };
-
 
     const scrollToSection = (id) => {
     const element = document.getElementById(id);
