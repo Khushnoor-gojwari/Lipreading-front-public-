@@ -199,7 +199,7 @@ useEffect(() => {
         </Card>
       </section>
 
-      <section id="try" className="m-4 mb-5">
+<section id="try" className="m-4 mb-5">
         <Card className="shadow-lg border-0">
           <Card.Body className="p-5">
             <h2 className="text-center mb-4">
@@ -212,13 +212,9 @@ useEffect(() => {
                   <strong>Select a Video File</strong>
                 </Form.Label>
                 <Form.Select
-                  id="videoSelect"
-                  name="video_name"
                   value={selectedVideo}
-                  onChange={(e) => {
-                    console.log("Selected video:", e.target.value);
-                    setSelectedVideo(e.target.value);
-                  }}
+                   onChange={(e) => setSelectedVideo(e.target.value)}
+                 
                 >
                   <option value="">-- Choose a video --</option>
                   {videoList.map((video, idx) => (
@@ -250,10 +246,51 @@ useEffect(() => {
 
             {videoUrl && (
               <div className="text-center mb-4">
-                <h5 className="mb-3">Generated Subtitles</h5>
-                {/* ... Rest of the code (assuming it displays the video and subtitles) */}
+                <h5 className="mb-3">🎥 Converted Video Preview</h5>
+                <video
+                  key={videoUrl}
+                  width="60%"
+                  height="auto"
+                  controls
+                  style={{ borderRadius: "12px" }}
+                >
+                  <source src={videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
             )}
+
+            <Row className="mt-4">
+              <Col md={6}>
+                <h5>📌 Real Text (Ground Truth)</h5>
+                <Form.Control
+                  type="text"
+                  value={realText}
+                  readOnly
+                  className="bg-light"
+                />
+              </Col>
+              <Col md={6}>
+                <h5>🤖 Predicted Text</h5>
+                <Form.Control
+                  type="text"
+                  value={predictedText}
+                  readOnly
+                  className="bg-light"
+                />
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-center mb-4 mt-4" >
+              <Button
+  variant="success"
+  onClick={() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/accuracy");
+  }}
+>
+  Check Accuracy
+</Button>
+            </div>
           </Card.Body>
         </Card>
       </section>
